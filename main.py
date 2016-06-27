@@ -4,6 +4,7 @@ import os
 import random
 import time
 import RPi.GPIO as GPIO
+import pibrella, signal
 import alsaaudio
 import wave
 import random
@@ -14,7 +15,7 @@ import re
 from memcache import Client
 
 #Settings
-button = 18 #GPIO Pin with button connected
+button = 11 #GPIO Pin with button connected
 lights = [24, 25] # GPIO Pins with LED's conneted
 device = "plughw:1" # Name of your microphone/soundcard in arecord -L
 
@@ -36,7 +37,7 @@ def internet_on():
 	print "Connection Failed"
     	return False
 
-	
+
 def gettoken():
 	token = mc.get("access_token")
 	refresh = refresh_token
@@ -51,7 +52,7 @@ def gettoken():
 		return resp['access_token']
 	else:
 		return False
-		
+
 
 def alexa():
 	GPIO.output(lights[0], GPIO.HIGH)
@@ -81,7 +82,7 @@ def alexa():
 		files = [
 				('file', ('request', json.dumps(d), 'application/json; charset=UTF-8')),
 				('file', ('audio', inf, 'audio/L16; rate=16000; channels=1'))
-				]	
+				]
 		r = requests.post(url, headers=headers, files=files)
 	if r.status_code == 200:
 		for v in r.headers['content-type'].split(";"):
@@ -104,7 +105,7 @@ def alexa():
 			GPIO.output(lights[1], GPIO.HIGH)
 			time.sleep(.2)
 			GPIO.output(lights[1], GPIO.LOW)
-		
+
 
 
 
@@ -130,7 +131,7 @@ def start():
 		inp = None
 		alexa()
 
-	
+
 
 if __name__ == "__main__":
 	GPIO.setwarnings(False)
